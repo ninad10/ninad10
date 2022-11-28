@@ -1,1 +1,1 @@
-Infrasturcture Automation Scripts 
+Infrastructure Automation Scripts 
