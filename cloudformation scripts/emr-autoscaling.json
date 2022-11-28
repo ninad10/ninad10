@@ -1,0 +1,1068 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "ASA-EMR-Cluster",
+    "Parameters": {
+        "EMRClusterName": {
+            "Description": "Name of the cluster",
+            "Type": "String",
+            "Default": "EMR Cluster Name",
+            "MinLength": "3",
+            "MaxLength": "50"
+        },
+        "EmrLogsBucketName": {
+            "Description": "The EMR logs S3 bucket name",
+            "Type": "String",
+            "Default": "Insert S3 bucket name for EMR logs",
+            "MinLength": "3",
+            "MaxLength": "100"
+        },
+        "Ec2KeyName": {
+            "Description": "Name of an existing EC2 KeyPair to enable SSH access to the instance",
+            "Type": "AWS::EC2::KeyPair::KeyName",
+            "Default": "Select key for your EMR cluster"
+        },
+		"AMIID": {
+            "Description": "Name of a Valid AMI ID which is available for this AWS account ",
+            "Type": "String",
+            "Default": "ami-xxxxxxxx"
+			
+        },
+        "TaskInstanceCount": {
+            "Description": "Number of task instances",
+            "Type": "String",
+            "Default": "1"
+        },
+        "MasterInstanceType": {
+            "Description": "Instance type to be used for the master instance.",
+            "Type": "String",
+            "Default": "m5.xlarge"
+        },
+        "CoreInstanceType": {
+            "Description": "Instance type to be used for core instances.",
+            "Type": "String",
+            "Default": "m5.xlarge"
+        },
+        "TaskInstanceType": {
+            "Description": "Instance type of Core Node",
+            "Type": "String",
+            "Default": "m5.xlarge"
+        },
+        "NumberOfCoreInstances": {
+            "Description": "Must be a valid number",
+            "Type": "Number",
+            "Default": 1
+        },
+        "SubnetID": {
+            "Description": "Must be Valid public subnet ID",
+            "Default": "Select Subnet for EMR cluster",
+            "Type": "AWS::EC2::Subnet::Id",
+            "MinLength": "3",
+            "MaxLength": "50"
+        },
+        "BootstrapScriptPath1": {
+            "Description": "Valid S3 location URL of BootstrapScript",
+            "Type": "String",
+            "Default": "Path to Log4j AWS Fix script",
+            "MinLength": "3",
+            "MaxLength": "100"
+        },
+        "BootstrapScriptPath2": {
+            "Description": "Valid S3 location URL of BootstrapScript",
+            "Type": "String",
+            "Default": "Please Enter Valid Bootstrap Script URL with S3 bucket details",
+            "MinLength": "3",
+            "MaxLength": "100"
+        },
+        "MasterSecurityGroup": {
+            "Description": "Valid Security Group Name",
+            "Type": "String",
+            "Default": "Please select security for EMR Master Instance",
+            "MinLength": "3",
+            "MaxLength": "50"
+        },
+        "SlaveSecurityGroup": {
+            "Description": "Valid Security Group Name",
+            "Type": "String",
+            "Default": "Please select security for EMR Slave Instance",
+            "MinLength": "3",
+            "MaxLength": "50"
+        },
+		"ServiceAccessSecurityGroup": {
+            "Description": "Valid Security Group Name",
+            "Type": "String",
+            "Default": "Please select security for EMR Slave Instance",
+            "MinLength": "3",
+            "MaxLength": "50"
+        },
+        "ServiceRole": {
+            "Description": "Valid EMR Role",
+            "Type": "String",
+            "Default": "EMR_DefaultRole",
+            "MinLength": "3",
+            "MaxLength": "50"
+        },
+        "AutoScalingRole": {
+            "Description": "Valid EMR Scaling Role",
+            "Type": "String",
+            "Default": "EMR_AutoScaling_DefaultRole",
+            "MinLength": "3",
+            "MaxLength": "50"
+        },
+        "ReleaseLabel": {
+            "Description": "Must be a valid EMR release version",
+            "Default": "emr-5.30.1",
+            "Type": "String",
+            "MinLength": "3",
+            "MaxLength": "50"
+        },
+        "Applications": {
+            "Description": "Cluster setup:",
+            "Type": "String",
+            "Default": "Spark,Hadoop,Oozie,Hue,Livy",
+            "MinLength": "3",
+            "MaxLength": "50"
+        },
+        "HadoopApplication": {
+            "Description": "Name of Application",
+            "Type": "String",
+            "Default": "Hadoop",
+            "MinLength": "3",
+            "MaxLength": "50"
+        },
+        "OozieApplication": {
+            "Description": "Name of Application",
+            "Type": "String",
+            "Default": "Oozie",
+            "MinLength": "3",
+            "MaxLength": "50"
+        },
+        "SparkApplication": {
+            "Description": "Name of Application",
+            "Type": "String",
+            "Default": "Spark",
+            "MinLength": "3",
+            "MaxLength": "50"
+        },
+        "HueApplication": {
+            "Description": "Name of Application",
+            "Type": "String",
+            "Default": "Hue",
+            "MinLength": "3",
+            "MaxLength": "50"
+        },
+        "LivyApplication": {
+            "Description": "Name of Application",
+            "Type": "String",
+            "Default": "Livy",
+            "MinLength": "3",
+            "MaxLength": "50"
+        },
+        "HDFSConfiguration": {
+            "Description": "Configuration Parameter to enable ACLs on Namenode/Master Node",
+            "Type": "String",
+            "Default": "true",
+            "MinLength": "4",
+            "MaxLength": "50"
+        },
+        "HueConfiguration": {
+            "Description": "Changing default Hue timezone to Etc/UTC",
+            "Type": "String",
+            "Default": "true",
+            "MinLength": "4",
+            "MaxLength": "50"
+        },
+        "YARNConfiguration1": {
+            "Description": "Log Aggregation configuration in seconds",
+            "Type": "String",
+            "Default": "604800",
+            "MinLength": "3",
+            "MaxLength": "50"
+        },
+        "YARNConfiguration2": {
+            "Description": "Virtual Memory check enabled",
+            "Type": "String",
+            "Default": "false"
+        },
+        "OozieConfiguration": {
+            "Description": "Oozie Workflow Max Length",
+            "Type": "String",
+            "Default": "1048576",
+            "MinLength": "3",
+            "MaxLength": "50"
+        },
+        "SparkConfiguration": {
+            "Description": "Spark Default Memory Configuration",
+            "Type": "String",
+            "Default": "8G",
+            "MinLength": "2",
+            "MaxLength": "50"
+        },
+        "s3bucketData": {
+            "Description": "Valid name of S3Bucket",
+            "Type": "String",
+            "Default": "Enter Existing S3 Data Bucket Name",
+            "MinLength": "3",
+            "MaxLength": "100"
+        },
+        "S3BootstrapScriptBucketName": {
+            "Description": "Valid name of S3 Bucket",
+            "Type": "String",
+            "Default": "Enter the S3 bucket name where bootstrap script is present",
+            "MinLength": "3",
+            "MaxLength": "100"
+        }
+    },
+    "Mappings": {},
+    "Resources": {
+        "EMRCluster": {
+            "Type": "AWS::EMR::Cluster",
+            "Properties": {
+                "Applications": [
+                    {
+                        "Name": {
+                            "Ref": "SparkApplication"
+                        }
+                    },
+                    {
+                        "Name": {
+                            "Ref": "HadoopApplication"
+                        }
+                    },
+                    {
+                        "Name": {
+                            "Ref": "OozieApplication"
+                        }
+                    },
+                    {
+                        "Name": {
+                            "Ref": "HueApplication"
+                        }
+                    },
+                    {
+                        "Name": {
+                            "Ref": "LivyApplication"
+                        }
+                    }
+                ],
+                "Configurations": [
+                    {
+                        "Classification": "hdfs-site",
+                        "ConfigurationProperties": {
+                            "dfs.namenode.acls.enabled": {
+                                "Ref": "HDFSConfiguration"
+                            }
+                        }
+                    },
+					{
+                        "Classification": "hue-ini",
+                        "ConfigurationProperties": {
+                            "time_zone": {
+                                "Ref": "HueConfiguration"
+                            }
+                        }
+                    },
+                    {
+                        "Classification": "yarn-site",
+                        "ConfigurationProperties": {
+                            "yarn.log-aggregation.retain-seconds": {
+                                "Ref": "YARNConfiguration1"
+                            },
+                            "yarn.nodemanager.vmem-check-enabled": {
+                                "Ref": "YARNConfiguration2"
+                            }
+                        }
+                    },
+                    {
+                        "Classification": "livy-conf",
+                        "ConfigurationProperties": {
+                            "livy.server.session.timeout-check": "true",
+                            "livy.server.session.timeout": "10h",
+                            "livy.server.yarn.app-lookup-timeout": "120s"
+                        }
+                    },
+                    {
+                        "Classification": "spark-defaults",
+                        "ConfigurationProperties": {
+                            "spark.executor.memory": {
+                                "Ref": "SparkConfiguration"
+                            }
+                        }
+                    },
+                    {
+                        "Classification": "spark-hive-site",
+                        "ConfigurationProperties": {
+                            "hive.metastore.client.factory.class": "com.amazonaws.glue.catalog.metastore.AWSGlueDataCatalogHiveClientFactory"
+                        }
+                    }
+                ],
+                "BootstrapActions": [
+                    {
+                        "Name": "Log4j vulnerabilities",
+                        "ScriptBootstrapAction": {
+                            "Path": {
+                                "Ref": "BootstrapScriptPath1"
+                            }
+                        }
+                    },
+                    {
+                        "Name": "install Binaries",
+                        "ScriptBootstrapAction": {
+                            "Path": {
+                                "Ref": "BootstrapScriptPath2"
+                            }
+                        }
+                    }
+                ],
+                "CustomAmiId" : {"Ref" : "AMIID"},
+				"Tags":[
+				{
+					"Key":"Contact Email",
+					"Value":"hrishikesh.hemade@roche.com"
+				},
+				{
+					"Key":"Cost Center",
+					"Value":"Viewics-ASA"
+				},
+				{
+					"Key":"Environment",
+					"Value":"DEV"
+				},
+				{
+					"Key":"Name",
+					"Value":"ASA-DEV-EMR"
+				},
+				{
+					"Key":"Owner Email",
+					"Value":"hrishikesh.hemade@roche.com"
+				},
+				{
+					"Key":"Contact Name",
+					"Value":"Hrishikesh Hemade"
+				},
+				{
+					"Key":"Project",
+					"Value":"ASA"
+				}
+				],
+                "Instances": {
+                    "Ec2KeyName": {
+                        "Ref": "Ec2KeyName"
+                    },
+                    "Ec2SubnetId": {
+                        "Ref": "SubnetID"
+                    },
+					"TerminationProtected" : "true",
+                    "EmrManagedMasterSecurityGroup": {
+                        "Ref": "MasterSecurityGroup"
+                    },
+                    "EmrManagedSlaveSecurityGroup": {
+                        "Ref": "SlaveSecurityGroup"
+                    },
+					"ServiceAccessSecurityGroup": {
+                        "Ref": "ServiceAccessSecurityGroup"
+                    },
+                    "MasterInstanceGroup": {
+                        "InstanceCount": 1,
+                        "InstanceType": {
+                            "Ref": "MasterInstanceType"
+                        },
+                        "Market": "ON_DEMAND",
+                        "Name": "Master"
+                    },
+                    "CoreInstanceGroup": {
+                        "InstanceCount": {
+                            "Ref": "NumberOfCoreInstances"
+                        },
+                        "InstanceType": {
+                            "Ref": "CoreInstanceType"
+                        },
+                        "Market": "ON_DEMAND",
+                        "Name": "Core"
+                    }
+                },
+                "VisibleToAllUsers": true,
+                "ReleaseLabel": {
+                    "Ref": "ReleaseLabel"
+                },
+                "LogUri": {
+					"Fn::Join": ["",["s3://", { "Ref": "cfs3logbucket" },"/" ]]
+                },
+                "Name": {
+                    "Ref": "EMRClusterName"
+                },
+                "JobFlowRole": {
+                    "Ref": "EMRClusterinstanceProfile"
+                },
+                "ServiceRole": {
+                    "Ref": "ServiceRole"
+                },
+                "AutoScalingRole": {
+                    "Ref": "AutoScalingRole"
+                }
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "0c932ae4-9d9a-4edd-b6da-7138e09e496f"
+                }
+            },
+            "DependsOn": [
+                "EMRClusterinstanceProfile"
+            ]
+        },
+        "cfs3logbucket": {
+            "Type": "AWS::S3::Bucket",
+            "Properties": {
+                "BucketName": {
+                    "Ref": "EmrLogsBucketName"
+                }
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "1236fba4-6a73-4b7b-95a4-1d764653000a"
+                }
+            }
+        },
+        "CustomGlueS3ManagedPolicy": {
+            "Type": "AWS::IAM::ManagedPolicy",
+            "Properties": {
+                "PolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Sid": "VisualEditor0",
+                            "Effect": "Allow",
+                            "Action": [
+                                "s3:ListBucket",
+                                "s3:GetBucketLocation",
+                                "s3:ListAllMyBuckets",
+                                "s3:PutObject",
+                                "s3:GetObject",
+                                "s3:DeleteObject",
+                                "s3:GetBucketCors",
+                                "s3:PutBucketCors",
+                                "s3:AbortMultipartUpload"
+                            ],
+                            "Resource": [
+								{
+                                    "Fn::Join": [
+                                        "",
+                                        [
+                                            "arn:aws:s3:::",
+                                            {
+                                                "Ref": "s3bucketData"
+                                            }
+                                        ]
+                                    ]
+                                },
+                                {
+                                    "Fn::Join": [
+                                        "",
+                                        [
+                                            "arn:aws:s3:::",
+                                            {
+                                                "Ref": "s3bucketData"
+                                            },
+                                            "/*"
+                                        ]
+                                    ]
+                                },
+								"arn:aws:s3:::asa-eu-dev-sagemaker-dev-asa-*",
+								"arn:aws:s3:::asa-eu-dev-sagemaker-dev-asa-*/*",
+								"arn:aws:s3:::asa-eu-dev-sagemaker-dev-asa",
+								"arn:aws:s3:::asa-eu-dev-sagemaker-dev-asa/*",
+								"arn:aws:s3:::asa-eu-dev-sagemaker-dev-athena-wg-asa",
+								"arn:aws:s3:::asa-eu-dev-sagemaker-dev-athena-wg-asa/*",
+								"arn:aws:s3:::asa-delivery-dev",
+								"arn:aws:s3:::asa-delivery-dev/*"
+							]
+                        },
+                        {
+                            "Sid": "VisualEditor1",
+                            "Effect": "Allow",
+                            "Action": [
+                                "glue:UpdateDatabase",
+								"glue:GetDatabase",
+								"glue:GetDatabases",
+								"glue:CreateTable",
+								"glue:UpdateTable",
+								"glue:DeleteTable",
+								"glue:GetTable",
+								"glue:GetTables",
+								"glue:GetTableVersions",
+								"glue:CreatePartition",
+								"glue:BatchCreatePartition",
+								"glue:UpdatePartition",
+								"glue:DeletePartition",
+								"glue:BatchDeletePartition",
+								"glue:GetPartition",
+								"glue:GetPartitions",
+								"glue:BatchGetPartition",
+								"glue:CreateUserDefinedFunction",
+								"glue:UpdateUserDefinedFunction",
+								"glue:DeleteUserDefinedFunction",
+								"glue:GetUserDefinedFunction",
+								"glue:GetUserDefinedFunctions"
+                            ],
+                            "Resource": [
+                                {
+                                    "Fn::Sub": "arn:aws:glue:${AWS::Region}:${AWS::AccountId}:database/global_temp"
+                                },
+								"arn:aws:glue:eu-central-1:901666718536:database/asa_dev_asa_user_*",
+								"arn:aws:glue:eu-central-1:901666718536:table/asa_dev_asa_user_*/*",
+								"arn:aws:glue:eu-central-1:901666718536:database/asa_dev_asa_org_*",
+								"arn:aws:glue:eu-central-1:901666718536:table/asa_dev_asa_org_*/*",
+								"arn:aws:glue:eu-central-1:901666718536:database/asa_ingress",
+								"arn:aws:glue:eu-central-1:901666718536:table/asa_ingress/*",
+								"arn:aws:glue:eu-central-1:901666718536:database/asa_egress",
+								"arn:aws:glue:eu-central-1:901666718536:table/asa_egress/*",
+								"arn:aws:glue:eu-central-1:901666718536:database/asa_analysis",
+								"arn:aws:glue:eu-central-1:901666718536:table/asa_analysis/*",
+								"arn:aws:glue:eu-central-1:901666718536:database/asa_dev_asa*",
+								"arn:aws:glue:eu-central-1:901666718536:table/asa_dev_asa*/*",
+								"arn:aws:glue:eu-central-1:901666718536:database/asa_dev_asa_*",
+								"arn:aws:glue:eu-central-1:901666718536:table/asa_dev_asa_*/*",
+								"arn:aws:glue:eu-central-1:901666718536:catalog"
+                                
+                            ]
+                        },
+						{
+							"Sid": "glueDefault",
+							"Effect": "Allow",
+							"Action": [
+								"glue:GetDatabase",
+								"glue:CreateDatabase"
+							],
+								"Resource": [
+									{
+										"Fn::Sub": "arn:aws:glue:${AWS::Region}:${AWS::AccountId}:database/default"
+									},
+									{
+										"Fn::Sub": "arn:aws:glue:${AWS::Region}:${AWS::AccountId}:catalog"
+									}
+								]
+						},
+						{
+							"Action": [
+								"s3:ListBucket",
+								"s3:GetObject"
+							],
+							"Resource": [
+								"arn:aws:s3:::asa-test-data-push",
+								"arn:aws:s3:::asa-test-data-push/*",
+								"arn:aws:s3:::asa-dev-athena-wg"
+							],
+							"Effect": "Allow",
+							"Sid": "s3CopyfromTest"
+						}
+                    ]
+                }
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "e78a5dce-7671-41cf-ba1b-36628d4409eb"
+                }
+            }
+        },
+        "EMRCustomManagedPolicy": {
+            "Type": "AWS::IAM::ManagedPolicy",
+            "Properties": {
+				"PolicyDocument": {
+				"Version": "2012-10-17",
+				"Statement": [
+				{
+					"Effect": "Allow",
+					"Sid": "VisualEditor0",
+					"Action": [
+						"ec2:Describe*",
+						"cloudwatch:*"
+					],
+					"Resource": [
+						"*"
+					]            
+				},
+				{
+                            "Sid": "VisualEditor1",
+                            "Effect": "Allow",
+                            "Action": [
+                                "elasticmapreduce:DescribeStep",
+								"elasticmapreduce:ListInstances",
+								"elasticmapreduce:DescribeNotebookExecution",
+								"elasticmapreduce:ListBootstrapActions",
+								"elasticmapreduce:ListSteps",
+								"elasticmapreduce:DescribeStudio",
+								"elasticmapreduce:DescribeEditor",
+								"elasticmapreduce:AddJobFlowSteps",
+								"elasticmapreduce:DescribeCluster",
+								"elasticmapreduce:DescribeJobFlows",
+								"elasticmapreduce:ListInstanceGroups"
+                                ],
+                            "Resource": [
+							{
+									"Fn::Sub": "arn:aws:elasticmapreduce:${AWS::Region}:${AWS::AccountId}:notebook-execution/*"
+							},
+							{
+									"Fn::Sub": "arn:aws:elasticmapreduce:${AWS::Region}:${AWS::AccountId}:editor/*"
+							},
+							{
+									"Fn::Sub": "arn:aws:elasticmapreduce:${AWS::Region}:${AWS::AccountId}:studio/*"
+							},
+							{
+									"Fn::Sub": "arn:aws:elasticmapreduce:${AWS::Region}:${AWS::AccountId}:cluster/*"
+
+							}
+                            
+                            ]
+                },
+				{
+						"Sid": "VisualEditor2",
+						"Effect": "Allow",
+						"Action": [
+							"elasticmapreduce:DescribeSecurityConfiguration",
+							"elasticmapreduce:DescribeRepository"
+						],
+						"Resource": "*"
+				},
+		{
+			"Effect": "Allow",
+            "Sid": "VisualEditor3",
+            "Action":[
+            	"s3:ListBucket",
+             	"s3:GetBucketLocation",
+                "s3:ListAllMyBuckets",
+                "s3:PutObject",
+                "s3:GetObject",
+                "s3:DeleteObject",
+                "s3:GetBucketCors",
+                "s3:PutBucketCors",
+                "s3:AbortMultipartUpload"  
+			],
+            "Resource": [
+                {
+                   "Fn::Join": ["",
+                         [
+                         "arn:aws:s3:::",
+                         {
+                          "Ref": "cfs3logbucket"
+                         }
+                         ]
+                       ]
+                },
+                {
+                   "Fn::Join": ["",
+					[
+                       "arn:aws:s3:::",
+                        {
+                            "Ref": "cfs3logbucket"
+                        },
+                           "/*"
+                    ]
+                   ]
+                }
+					]            
+				}
+			]
+		}
+	},
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "025fc4d7-9f48-47a7-9653-3194b7c0e5fc"
+                }
+            }
+  },
+        "EMRCustomS3BootstrapPolicy": {
+            "Type": "AWS::IAM::ManagedPolicy",
+            "Properties": {
+                "PolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Sid": "VisualEditor0",
+                            "Effect": "Allow",
+                            "Action": [
+								"s3:ListBucket",
+                                "s3:GetBucketLocation",
+                                "s3:ListAllMyBuckets",
+                                "s3:GetObject",
+                                "s3:GetBucketCors",
+                                "s3:AbortMultipartUpload"
+								],
+                            "Resource": [
+                                {
+                                    "Fn::Join": [
+                                        "",
+                                        [
+                                            "arn:aws:s3:::",
+                                            {
+                                                "Ref": "S3BootstrapScriptBucketName"
+                                            }
+                                        ]
+                                    ]
+                                },
+                                {
+                                    "Fn::Join": [
+                                        "",
+                                        [
+                                            "arn:aws:s3:::",
+                                            {
+                                                "Ref": "S3BootstrapScriptBucketName"
+                                            },
+                                            "/*"
+                                        ]
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "a0a821b7-7cf6-4e78-8806-a72a46d2f513"
+                }
+            }
+        },
+        "EMRCustomRoleCF": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+                "AssumeRolePolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Principal": {
+                                "Service": [
+                                    "ec2.amazonaws.com"
+                                ]
+                            },
+                            "Action": [
+                                "sts:AssumeRole"
+                            ]
+                        }
+                    ]
+                },
+                "Path": "/",
+                "ManagedPolicyArns": [
+                    {
+                        "Ref": "EMRCustomManagedPolicy"
+                    },
+                    {
+                        "Ref": "EMRCustomS3BootstrapPolicy"
+                    },
+                    {
+                        "Ref": "CustomGlueS3ManagedPolicy"
+                    }
+                ]
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "1ca68a5c-6f69-4fdf-b1bb-e69a0b6831b9"
+                }
+            }
+        },
+        "TaskInstanceGroupConfig": {
+            "Type": "AWS::EMR::InstanceGroupConfig",
+            "DependsOn": "EMRCluster",
+            "Properties": {
+                "InstanceCount": {
+                    "Ref": "TaskInstanceCount"
+                },
+                "InstanceType": {
+                    "Ref": "TaskInstanceType"
+                },
+                "InstanceRole": "TASK",
+                "JobFlowId": {
+                    "Ref": "EMRCluster"
+                },
+                "AutoScalingPolicy": {
+                    "Constraints": {
+                        "MinCapacity": 1,
+                        "MaxCapacity": 5
+                    },
+                    "Rules": [
+                        {
+                            "Name": "TaskNode-scale-in",
+                            "Description": "TaskNode Scale-in based on YARN Memory Available",
+                            "Action": {
+                                "SimpleScalingPolicyConfiguration": {
+                                    "AdjustmentType": "CHANGE_IN_CAPACITY",
+                                    "ScalingAdjustment": -1,
+                                    "CoolDown": 300
+                                }
+                            },
+                            "Trigger": {
+                                "CloudWatchAlarmDefinition": {
+                                    "ComparisonOperator": "GREATER_THAN",
+                                    "EvaluationPeriods": 1,
+                                    "MetricName": "YARNMemoryAvailablePercentage",
+                                    "Namespace": "AWS/ElasticMapReduce",
+                                    "Period": 300,
+                                    "Threshold": 75,
+                                    "Statistic": "AVERAGE",
+                                    "Unit": "PERCENT",
+                                    "Dimensions": [
+                                        {
+                                            "Key": "JobFlowId",
+                                            "Value": "${emr.clusterid}"
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "Name": "TaskNode-scale-out",
+                            "Description": "TaskNode Scale-out based on YARN Memory Available",
+                            "Action": {
+                                "SimpleScalingPolicyConfiguration": {
+                                    "AdjustmentType": "CHANGE_IN_CAPACITY",
+                                    "ScalingAdjustment": 1,
+                                    "CoolDown": 300
+                                }
+                            },
+                            "Trigger": {
+                                "CloudWatchAlarmDefinition": {
+                                    "ComparisonOperator": "LESS_THAN",
+                                    "EvaluationPeriods": 1,
+                                    "MetricName": "YARNMemoryAvailablePercentage",
+                                    "Namespace": "AWS/ElasticMapReduce",
+                                    "Period": 300,
+                                    "Threshold": 15,
+                                    "Statistic": "AVERAGE",
+                                    "Unit": "PERCENT",
+                                    "Dimensions": [
+                                        {
+                                            "Key": "JobFlowId",
+                                            "Value": "${emr.clusterid}"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    ]
+                }
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "20d69eec-0ed0-4936-9e96-6f1a2f8a5fe6"
+                }
+            }
+        },
+        "EMRSetupHadoopDebugging": {
+            "Type": "AWS::EMR::Step",
+            "Properties": {
+                "ActionOnFailure": "CONTINUE",
+                "HadoopJarStep": {
+                    "Args": [
+                        "state-pusher-script"
+                    ],
+                    "Jar": "command-runner.jar"
+                },
+                "JobFlowId": {
+                    "Ref": "EMRCluster"
+                },
+                "Name": "Setup Hadoop Debugging"
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "b7833f05-f8e0-49b3-9fa5-8b6a7ae82b23"
+                }
+            }
+        },
+        "EMRClusterinstanceProfile": {
+            "Type": "AWS::IAM::InstanceProfile",
+            "Properties": {
+                "Path": "/",
+                "Roles": [
+                    {
+                        "Ref": "EMRCustomRoleCF"
+                    }
+                ]
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "6446a51d-5eec-4b89-a300-79aead425e0f"
+                }
+            }
+        }
+    },
+    "Outputs": {},
+    "Metadata": {
+        "AWS::CloudFormation::Designer": {
+            "a0a821b7-7cf6-4e78-8806-a72a46d2f513": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": -40,
+                    "y": 220
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "025fc4d7-9f48-47a7-9653-3194b7c0e5fc": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": -220,
+                    "y": 210
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "1ca68a5c-6f69-4fdf-b1bb-e69a0b6831b9": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": -130,
+                    "y": 90
+                },
+                "z": 1,
+                "embeds": [],
+                "isassociatedwith": [
+                    "025fc4d7-9f48-47a7-9653-3194b7c0e5fc",
+                    "a0a821b7-7cf6-4e78-8806-a72a46d2f513",
+                    "e78a5dce-7671-41cf-ba1b-36628d4409eb"
+                ]
+            },
+            "6446a51d-5eec-4b89-a300-79aead425e0f": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 60,
+                    "y": 20
+                },
+                "z": 1,
+                "embeds": [],
+                "isassociatedwith": [
+                    "1ca68a5c-6f69-4fdf-b1bb-e69a0b6831b9"
+                ]
+            },
+            "0c932ae4-9d9a-4edd-b6da-7138e09e496f": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 310,
+                    "y": 20
+                },
+                "z": 1,
+                "embeds": [
+                    "b7833f05-f8e0-49b3-9fa5-8b6a7ae82b23",
+                    "20d69eec-0ed0-4936-9e96-6f1a2f8a5fe6"
+                ]
+            },
+            "b7833f05-f8e0-49b3-9fa5-8b6a7ae82b23": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 10,
+                    "y": -70
+                },
+                "z": 1,
+                "parent": "0c932ae4-9d9a-4edd-b6da-7138e09e496f",
+                "embeds": [],
+                "iscontainedinside": [
+                    "0c932ae4-9d9a-4edd-b6da-7138e09e496f",
+                    "0c932ae4-9d9a-4edd-b6da-7138e09e496f"
+                ]
+            },
+            "20d69eec-0ed0-4936-9e96-6f1a2f8a5fe6": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 10,
+                    "y": -70
+                },
+                "z": 1,
+                "parent": "0c932ae4-9d9a-4edd-b6da-7138e09e496f",
+                "embeds": [],
+                "dependson": [
+                    "0c932ae4-9d9a-4edd-b6da-7138e09e496f"
+                ]
+            },
+            "8f3aa796-e831-4434-8394-b64fec95082b": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 270,
+                    "y": 180
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "781a5bc9-1ea3-4b7b-9a38-2773cbf03763": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 270,
+                    "y": 330
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "13339a04-7f87-4ad2-853a-61d0824f2e16": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 270,
+                    "y": 250
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "928ef9d3-9903-4626-9436-e90d6c1a2d8c": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 490,
+                    "y": 90
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "e78a5dce-7671-41cf-ba1b-36628d4409eb": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 160,
+                    "y": 90
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "1236fba4-6a73-4b7b-95a4-1d764653000a": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 550,
+                    "y": 20
+                },
+                "z": 1,
+                "embeds": []
+            }
+        }
+    }
+}
