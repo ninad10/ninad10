@@ -1,0 +1,77 @@
+[{
+		"Classification": "hdfs-site",
+		"Configuration": [
+			{
+				"Classification":"export",
+				"Properties": {
+					"dfs.namenode.acls.enabled": "true"
+				}
+			}
+		],
+		"Properties":{}
+	},
+	{
+		"Classification": "hue-ini",
+		"Configuration": [
+			{
+				"Classification":"export",
+				"Properties": {
+					"time_zone": "Etc/UTC"
+				}
+			}
+		],
+		"Properties":{}
+	},
+	{
+		"Classification": "yarn-site",
+		"Configuration": [
+			{
+				"Classification":"export",
+				"Properties": {
+					"yarn.log-aggregation.retain-seconds": "604800",
+					"yarn.nodemanager.vmem-check-enabled": "false"
+				}
+			}
+		],
+		"Properties":{}
+	},
+	{
+		"Classification": "livy-conf",
+		"Configuration":[
+		{	
+			"Classification":"export",
+				"Properties": {
+
+					"livy.server.session.timeout-check": "true",
+					"livy.server.session.timeout": "10h",
+					"livy.server.yarn.app-lookup-timeout": "120s"
+				}
+		}
+		],
+		"Properties":{}
+	},
+	{
+		"Classification": "spark-defaults",
+		"Configuration": [	
+		{
+			"Classification":"export",
+				"Properties": {
+					"spark.executor.memory": "8G"
+				}
+		}
+	],
+	"Properties":{}
+	},
+	{
+		"Classification": "spark-hive-site",
+		"Configuration": [
+		{	
+			"Classification":"export",
+				"Properties": {
+					"hive.metastore.client.factory.class": "com.amazonaws.glue.catalog.metastore.AWSGlueDataCatalogHiveClientFactory"
+				}
+		}
+	],
+	"Properties":{}
+	}
+]

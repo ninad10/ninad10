@@ -1,0 +1,11 @@
+{
+      "action_on_failure" : "CONTINUE",
+      "hadoop_jar_step" : 
+        {
+          "jar" : "command-runner.jar",  
+          "args" : [
+            "state-pusher-script"
+          ]
+        },      
+      "name" : "Hadoop Debugging"
+}
