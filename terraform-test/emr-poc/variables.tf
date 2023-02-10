@@ -21,7 +21,7 @@ variable "release_label" {
   default = "emr-5.30.2"
 }
 variable "autoscaling_role" {
-  default = "arn:aws:iam::374303354733:role/EMR_AutoScaling_DefaultRole"
+  default = "arn:aws:iam::xxxxxx:role/EMR_AutoScaling_DefaultRole"
   
 }
 variable "applications" {
@@ -99,7 +99,7 @@ variable "core_instance_group_name" {
 variable "core_instance_group_instance_type" {
   type        = string
   description = "EC2 instance type for all instances in the Core instance group"
-  default = "m5.xlarge"
+  default = "m5.xxxxx"
 }
 
 
@@ -163,7 +163,7 @@ variable "task_instance_group_name" {
 variable "task_instance_group_instance_type" {
   type        = string
   description = "EC2 instance type for all instances in the task instance group"
-  default = "m5.xlarge"
+  default = "m5.xxxxx"
 }
 
 
@@ -218,44 +218,43 @@ variable "task_instance_group_autoscaling_policy" {
 variable "emrs3LogUri" {
     type = string
     description = "Name of Bootstrap s3 bucket Log URI"
-    default = "emr-poc-cloudformation"
+    default = "{s3-bucketname}"
 }
 #-------------------------------------------------------------------------------#
 
 
 variable "key_name" {
-  default = "emr-demo-poc"
+  default = "{ssh-keyname}"
   }
 variable "subnet_id" {
-  default = "subnet-00aa5c3735e740b7b"
+  default = "subnet-xxxxxxxx"
   }
 variable "instance_profile" {
   default =  "EMR_EC2_DefaultRole"
   }
 variable "service_access_security_group"{
-  default =  "sg-0a7fa5499546c8ed2"
+  default =  "sg-xxxxxxxx"
   }
   
 variable "emr_managed_master_security_group" {
-  default = "sg-0fcfea1ddab989d61"
+  default = "sg-xxxxxxxx"
   }
 variable "emr_managed_slave_security_group" {
-  default = "sg-0fcfea1ddab989d61"
+  default = "sg-xxxxxxxxx"
   }
 variable "service_role" {
-  default = "arn:aws:iam::374303354733:role/EMR_DefaultRole"
+  default = "arn:aws:iam::xxxxx:role/EMR_DefaultRole"
   }
 /*variable "configurations_json" {
   type        = string
   description = "A JSON string for supplying list of configurations for the EMR cluster"
-  #default = "C:\Users\rathkann\Documents\terraform-test\configuration_json"
 } */ 
 
 variable "log_uri" {
-  default = "s3://emr-poc-cloudformation/"
+  default = "s3://{s3-bucketname}/"
   }
 /*variable "steps" {
   type        = string
   description = "Steps to execute after creation of EMR"
-  #default = "C:\Users\rathkann\Documents\terraform-test\steps_json"
+
 }*/
