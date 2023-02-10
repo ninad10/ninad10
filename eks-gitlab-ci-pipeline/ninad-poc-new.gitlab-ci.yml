@@ -1,0 +1,89 @@
+
+image:
+  name: hashicorp/terraform:light
+  
+before_script:
+  - whoami
+  #- mv kubectl /usr/local/bin/
+  - rm -rf .terraform
+  - terraform --version
+  - terraform init
+
+
+stages:
+  - validate
+  - plan
+  - apply
+  - deploy_apps
+  - destroy
+  
+
+validate:
+  stage: validate
+  tags:
+    - ninad-runner
+  script:
+    - terraform validate  
+
+plan:
+  stage: plan
+  tags:
+    - ninad-runner
+  script:
+    - terraform plan -out "planfile"
+  artifacts:
+    paths:
+      - planfile  
+
+apply:
+  stage: apply
+  tags:
+    - ninad-runner
+  script:
+    - terraform apply -input=false "planfile"
+  dependencies:
+    - plan  
+  when: manual  
+
+deploy_apps:
+  stage: deploy_apps
+  image:
+    name: bitnami/kubectl:latest
+    entrypoint: ['']
+  script:
+    - yum update && yum add curl
+    - curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+    - curl -LO "https://dl.k8s.io/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256"
+    - echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check
+    - pwd
+    - install -o gitlab-runner -g gitlab-runner -m 0755 kubectl /home/gitlab-runner/builds/NcM5RHfU/0/navify-analytics/cloud-automation/kubectlbin/kubectl
+    - chmod +x kubectl
+    - ls -lsa ./registereks.sh
+    - ls -lsa ./deploy-mynginx.sh
+    - whoami
+    - chmod +x ./registereks.sh
+    - chmod +x ./deploy-mynginx.sh
+    - ./registereks.sh
+    - ./deploy-mynginx.sh
+  tags:
+    - ninad-runner
+  dependencies:
+   - apply    
+  environment:
+    name: poc
+    kubernetes:
+      namespace: default 
+  when: manual 
+
+
+destroy:
+  stage: destroy
+  tags:
+    - ninad-runner
+  script:
+    - terraform destroy -auto-approve
+  dependencies:
+    - plan
+    - apply
+    - deploy_apps  
+  when: manual  

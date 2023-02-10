@@ -1,0 +1,12 @@
+FROM python:3.8-slim
+
+# Install dependencies
+#COPY requirements.txt .
+RUN pip install flask
+
+EXPOSE 8080
+# Copy the application code
+#COPY . .
+
+# Specify the command to run the application
+CMD ["python", "my-app.py"]
