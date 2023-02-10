@@ -11,7 +11,7 @@ variable "availability_zones_count" {
 }
 
 variable "instance-type" {
-  default     = "t2.medium"
+  default     = "t2.xxxxxx"
   description = "Instance type"
 }
 
@@ -23,31 +23,31 @@ variable "volume-type" {
 variable "vpc" {
   description = "The CIDR block for the VPC. Default value is a valid CIDR, but not acceptable by AWS and should be overridden"
   type        = string
-  default     = "ekstest"
+  default     = "xxxxx"
 }
 
 variable "vpc_cidr" {
   description = "The CIDR block for the VPC. Default value is a valid CIDR, but not acceptable by AWS and should be overridden"
   type        = string
-  default     = "10.0.0.0/16"
+  default     = "xxxxxxx/16"
 }
 
 variable "cidr_blocks1" {
   description = "The CIDR block for the VPC. Default value is a valid CIDR, but not acceptable by AWS and should be overridden"
   type        = string
-  default     = "10.0.0.0/8"
+  default     = "xxxxxx/8"
 }
 
 variable "cidr_blocks2" {
   description = "The CIDR block for the VPC. Default value is a valid CIDR, but not acceptable by AWS and should be overridden"
   type        = string
-  default     = "192.168.0.0/16"
+  default     = "xxxxx/16"
 }
 
 variable "cidr_blocks3" {
   description = "The CIDR block for the VPC. Default value is a valid CIDR, but not acceptable by AWS and should be overridden"
   type        = string
-  default     = "172.16.0.0/12"
+  default     = "xxxxx/12"
 }
 
 
@@ -60,32 +60,32 @@ variable "subnet_cidr_bits" {
 
 variable "private_subnet1" {
   description = "private subnet range"
-  default = "10.0.1.0/24"
+  default = "xxxxx/24"
 }
 
 variable "private_subnet2" {
   description = "private subnet range"
-  default = "10.0.2.0/24"
+  default = "xxxxxx/24"
 }
 
 variable "private_subnet3" {
   description = "private subnet range"
-  default = "10.0.3.0/24"
+  default = "xxxxxx/24"
 }
 
 variable "public_subnet1" {
   description = "public subnet range"
-  default = "10.0.4.0/24"
+  default = "xxxxxx/24"
 }
 
 variable "public_subnet2" {
   description = "public subnet range"
-  default = "10.0.5.0/24"
+  default = "xxxxxx/24"
 }
 
 variable "public_subnet3" {
   description = "public subnet range"
-  default = "10.0.6.0/24"
+  default = "xxxxxxx/24"
 }
 
 variable "tags" {
