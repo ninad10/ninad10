@@ -35,17 +35,17 @@
         "MasterInstanceType": {
             "Description": "Instance type to be used for the master instance.",
             "Type": "String",
-            "Default": "m5.xlarge"
+            "Default": "m5.xxxxx"
         },
         "CoreInstanceType": {
             "Description": "Instance type to be used for core instances.",
             "Type": "String",
-            "Default": "m5.xlarge"
+            "Default": "m5.xxxxx"
         },
         "TaskInstanceType": {
             "Description": "Instance type of Core Node",
             "Type": "String",
-            "Default": "m5.xlarge"
+            "Default": "m5.xxxxx"
         },
         "NumberOfCoreInstances": {
             "Description": "Must be a valid number",
@@ -314,36 +314,6 @@
                     }
                 ],
                 "CustomAmiId" : {"Ref" : "AMIID"},
-				"Tags":[
-				{
-					"Key":"Contact Email",
-					"Value":"hrishikesh.hemade@roche.com"
-				},
-				{
-					"Key":"Cost Center",
-					"Value":"Viewics-ASA"
-				},
-				{
-					"Key":"Environment",
-					"Value":"DEV"
-				},
-				{
-					"Key":"Name",
-					"Value":"ASA-DEV-EMR"
-				},
-				{
-					"Key":"Owner Email",
-					"Value":"hrishikesh.hemade@roche.com"
-				},
-				{
-					"Key":"Contact Name",
-					"Value":"Hrishikesh Hemade"
-				},
-				{
-					"Key":"Project",
-					"Value":"ASA"
-				}
-				],
                 "Instances": {
                     "Ec2KeyName": {
                         "Ref": "Ec2KeyName"
@@ -466,14 +436,7 @@
                                         ]
                                     ]
                                 },
-								"arn:aws:s3:::asa-eu-dev-sagemaker-dev-asa-*",
-								"arn:aws:s3:::asa-eu-dev-sagemaker-dev-asa-*/*",
-								"arn:aws:s3:::asa-eu-dev-sagemaker-dev-asa",
-								"arn:aws:s3:::asa-eu-dev-sagemaker-dev-asa/*",
-								"arn:aws:s3:::asa-eu-dev-sagemaker-dev-athena-wg-asa",
-								"arn:aws:s3:::asa-eu-dev-sagemaker-dev-athena-wg-asa/*",
-								"arn:aws:s3:::asa-delivery-dev",
-								"arn:aws:s3:::asa-delivery-dev/*"
+								"arn:aws:s3:::{s3-bucketname}/*"
 							]
                         },
                         {
@@ -506,23 +469,7 @@
                             "Resource": [
                                 {
                                     "Fn::Sub": "arn:aws:glue:${AWS::Region}:${AWS::AccountId}:database/global_temp"
-                                },
-								"arn:aws:glue:eu-central-1:901666718536:database/asa_dev_asa_user_*",
-								"arn:aws:glue:eu-central-1:901666718536:table/asa_dev_asa_user_*/*",
-								"arn:aws:glue:eu-central-1:901666718536:database/asa_dev_asa_org_*",
-								"arn:aws:glue:eu-central-1:901666718536:table/asa_dev_asa_org_*/*",
-								"arn:aws:glue:eu-central-1:901666718536:database/asa_ingress",
-								"arn:aws:glue:eu-central-1:901666718536:table/asa_ingress/*",
-								"arn:aws:glue:eu-central-1:901666718536:database/asa_egress",
-								"arn:aws:glue:eu-central-1:901666718536:table/asa_egress/*",
-								"arn:aws:glue:eu-central-1:901666718536:database/asa_analysis",
-								"arn:aws:glue:eu-central-1:901666718536:table/asa_analysis/*",
-								"arn:aws:glue:eu-central-1:901666718536:database/asa_dev_asa*",
-								"arn:aws:glue:eu-central-1:901666718536:table/asa_dev_asa*/*",
-								"arn:aws:glue:eu-central-1:901666718536:database/asa_dev_asa_*",
-								"arn:aws:glue:eu-central-1:901666718536:table/asa_dev_asa_*/*",
-								"arn:aws:glue:eu-central-1:901666718536:catalog"
-                                
+                                },                                
                             ]
                         },
 						{
@@ -547,9 +494,7 @@
 								"s3:GetObject"
 							],
 							"Resource": [
-								"arn:aws:s3:::asa-test-data-push",
-								"arn:aws:s3:::asa-test-data-push/*",
-								"arn:aws:s3:::asa-dev-athena-wg"
+								"arn:aws:s3:::{s3-bucketname}/*"
 							],
 							"Effect": "Allow",
 							"Sid": "s3CopyfromTest"
