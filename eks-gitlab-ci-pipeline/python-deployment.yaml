@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: my-app
-        image: 972681897642.dkr.ecr.eu-central-1.amazonaws.com/my-app:latest
+        image: xxxxx.dkr.ecr.eu-central-1.amazonaws.com/my-app:latest
         resources:
           limits:
             memory: 1024Mi
