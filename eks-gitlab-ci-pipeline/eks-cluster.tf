@@ -26,7 +26,7 @@ module "eks" {
       name                          = "worker-group-1"
       instance_type                 = "${var.instance-type}"
       additional_userdata           = "echo foo bar"
-      key_name                      = "ninad-poc"
+      key_name                      = "xxxxxx"
       asg_desired_capacity          = 2
       additional_security_group_ids = [aws_security_group.worker_group_mgmt_one.id]
     },
@@ -34,7 +34,7 @@ module "eks" {
       name                          = "worker-group-2"
       instance_type                 = "${var.instance-type}"
       additional_userdata           = "echo foo bar"
-      key_name                      = "ninad-poc"
+      key_name                      = "xxxxxx"
       additional_security_group_ids = [aws_security_group.worker_group_mgmt_two.id]
       asg_desired_capacity          = 1
     },
