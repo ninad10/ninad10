@@ -1,1 +1,0 @@
-navify-aws-sso-login --username rathkann --write-credentials asa-poc
