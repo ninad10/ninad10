@@ -1,28 +1,19 @@
 provider "aws" {
   #shared_config_files      = ["../../../.aws/config"]
   #shared_credentials_files = ["../../../.aws/credentials"]
-  #profile                  = "viewics-poc"
+  #profile                  = "default"
   region = "${var.region}"
 }
 
 terraform {
   backend "s3" {
-    #profile = "viewics-poc"
     encrypt = true   
-    bucket = "ninad-poc"
+    bucket = "bucket-name"
     #dynamodb_table = "terraform-state-lock-dynamo"
     key    = "output/terraformeks.tfstate"
-    region = "eu-central-1"
+    region = "xxxxxx"
   }
 }
-
-/*terraform {
-  backend "s3" {
-    bucket  = "ninad-poc"
-    key     = "output/ekstest.tfstate"
-    region  = "eu-central-1"
-  }
-}*/
 
 
 
