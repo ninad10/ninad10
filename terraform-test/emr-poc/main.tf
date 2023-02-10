@@ -10,14 +10,14 @@ terraform {
 provider "aws" {
   shared_config_files      = ["../../.aws/config"]
   shared_credentials_files = ["../../.aws/credentials"]
-  profile                  = "asa-poc"
+  profile                  = "default"
 }
 
 terraform {
   backend "s3" {
-    bucket  = "emr-poc-cloudformation"
+    bucket  = "{s3-bucketname}n"
     key     = "output/emrstate.tfstate"
-    region  = "eu-central-1"
+    region  = "{aws-regionname}"
   }
 }
 
@@ -32,7 +32,7 @@ resource "aws_emr_cluster" "cluster" {
   log_uri      = "${var.log_uri}"
   service_role = "${var.service_role}"
   bootstrap_action {
-    path = "s3://${var.emrs3LogUri}/bootstrap-script/install-bs-final.sh"
+    path = "s3://${var.emrs3LogUri}/bootstrap-scriptURI"
     name = "Install Spark Binaries"
   }
   configurations_json = <<EOF
