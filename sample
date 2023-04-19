@@ -19,37 +19,6 @@ provider "aws" {
   region = var.aws_region
 }
 
-resource "aws_s3_bucket" "emr_logs" {
-  bucket = "my-emr-logs"
-  acl    = "private"
-}
-variables.tf
-variable "aws_region" {
-  description = "The AWS region to deploy the infrastructure in"
-  default     = "us-west-2"
-}
-variable "environment" {
-  description = "Dev/Test/Prod"
-  default = "Dev"
-}
-
-variable "name" {
-  description = "Name of the EMR cluster to be created"
-  default = "Name of EMR Cluster"
-  }
-
-variable "release_label" {
-  description = "EMR Version"
-  default = "emr-x.x.x"
-}
-variable "applications" {
-  type    = list(string)
-  description = "Name the applications to be installed"
-  default = [ "Hadoop",
-              "Hive",
-              "Spark"]  
-}
-main.tf
 terraform {
   backend "s3" {
     bucket  = "{s3-bucketname}n"
@@ -64,7 +33,6 @@ resource "aws_emr_cluster" "cluster" {
   applications   = "${var.applications}"
   termination_protection = true  
   autoscaling_role ="${var.autoscaling_role}"
-  #configurations_json = file(var.configurations_json)
   log_uri      = "${var.log_uri}"
   service_role = "${var.service_role}"
   bootstrap_action {
@@ -72,6 +40,11 @@ resource "aws_emr_cluster" "cluster" {
     name = "Install Spark Binaries"
   
   configurations_json = file("configurations.json")
+}
+
+resource "aws_s3_bucket" "emr_logs" {
+  bucket = "my-emr-logs"
+  acl    = "private"
 }
 
 resource "aws_iam_role" "emr_service_role" {
@@ -115,6 +88,32 @@ egress {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
+}
+variables.tf
+variable "aws_region" {
+  description = "The AWS region to deploy the infrastructure in"
+  default     = "us-west-2"
+}
+variable "environment" {
+  description = "Dev/Test/Prod"
+  default = "Dev"
+}
+
+variable "name" {
+  description = "Name of the EMR cluster to be created"
+  default = "Name of EMR Cluster"
+  }
+
+variable "release_label" {
+  description = "EMR Version"
+  default = "emr-x.x.x"
+}
+variable "applications" {
+  type    = list(string)
+  description = "Name the applications to be installed"
+  default = [ "Hadoop",
+              "Hive",
+              "Spark"]  
 }
 configurations.json
 [
@@ -216,7 +215,7 @@ Optimizing Spark Configurations
 Configuring Spark for optimal performance can involve adjusting various settings such as executor memory, driver memory, and the number of executor cores. The example configurations.json file provided earlier demonstrates how to enable the maximizeResourceAllocation property, which allows Spark to automatically configure the executor memory and cores based on the available resources.
 8. Integrating Custom Applications and Libraries with EMR Clusters
 Bootstrap Actions
-Bootstrap actions are scripts that run on cluster nodes before any Hadoop or Spark applications are executed. You can use them to install custom software or make configuration changes that are not possible through the EMR configuration files. To add a bootstrap action to your EMR cluster, update your aws_emr_cluster resource in the modules/emr_cluster/main.tf file:
+Bootstrap actions are scripts that run on cluster nodes before any Hadoop or Spark applications are executed. You can use them to install custom software or make configuration changes that are not possible through the EMR configuration files. To add a bootstrap action to your EMR cluster, update your aws_emr_cluster resource in the main.tf file:
 resource "aws_emr_cluster" "this" {
   [...]
   bootstrap_action {
@@ -271,7 +270,7 @@ Centralized Logging
 By configuring your EMR cluster to store logs in an S3 bucket, you can enable centralized logging for easy access and analysis. You have already defined an S3 bucket for EMR logs in your main.tf file, which stores logs from various EMR components, including Hadoop, Spark, and YARN.
 11. Implementing EMR Workload Management and Autoscaling
 EMR Managed Scaling
-EMR Managed Scaling automatically resizes your EMR cluster based on the current workload and predefined scaling policies, helping to optimize cluster resources and costs. To enable EMR Managed Scaling, update your aws_emr_cluster resource in the modules/emr_cluster/main.tf file:
+EMR Managed Scaling automatically resizes your EMR cluster based on the current workload and predefined scaling policies, helping to optimize cluster resources and costs. To enable EMR Managed Scaling, update your aws_emr_cluster resource in the main.tf file:
 
 resource "aws_appautoscaling_target" "emr_core_nodes" {
   service_namespace  = "elasticmapreduce"
