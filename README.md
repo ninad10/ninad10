@@ -1,1 +1,1 @@
-Infrastructure Automation Scripts to create Hadoop clusters, Hadoop configurations and performance tunings
+Infrastructure Automation Scripts to create Hadoop clusters, DevOps Concepts ( EKS cluster) CI/CD Pipelines
